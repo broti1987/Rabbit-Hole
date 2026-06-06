@@ -1,5 +1,6 @@
 html,body{margin:0;height:100svh;overflow:hidden;background:#cfc7b4;}
-canvas{display:block;position:fixed;inset:0;}
+canvas{display:block;position:fixed;inset:0;cursor:grab;}
+canvas:active{cursor:grabbing;}
 
 #panel{
   position:fixed;top:14px;left:14px;z-index:10;width:212px;
@@ -23,9 +24,10 @@ canvas{display:block;position:fixed;inset:0;}
 #toggle{
   position:fixed;top:14px;left:14px;z-index:11;cursor:pointer;
   background:rgba(28,24,18,.82);color:#efe9da;border:0;border-radius:10px;
-  width:34px;height:34px;font-size:16px;display:none;
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 18px rgba(0,0,0,.3);
 }
+#toggle:hover{background:rgba(46,40,30,.9);}
 #hint{
   position:fixed;left:0;top:0;z-index:20;
   transform:translate(-50%,-140%);

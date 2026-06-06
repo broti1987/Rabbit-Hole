@@ -86,8 +86,12 @@ function mv(x,y){mouse.px=mouse.x;mouse.py=mouse.y;mouse.x=x;mouse.y=y;mouse.on=
 cv.addEventListener('mousemove',e=>mv(e.clientX,e.clientY));
 cv.addEventListener('mouseleave',()=>{mouse.on=false;mouse.x=mouse.y=-999;});
 cv.addEventListener('mousedown',gust);
+cv.addEventListener('touchstart',e=>{const t=e.touches[0];mv(t.clientX,t.clientY);gust();},{passive:true});
 cv.addEventListener('touchmove',e=>{const t=e.touches[0];mv(t.clientX,t.clientY);e.preventDefault();},{passive:false});
-cv.addEventListener('touchstart',e=>{const t=e.touches[0];mv(t.clientX,t.clientY);gust();});
+// lifting the finger ends the interaction → spring pulls every letter back home
+function endTouch(){mouse.on=false;mouse.x=mouse.y=-999;mouse.px=mouse.py=-999;}
+cv.addEventListener('touchend',endTouch);
+cv.addEventListener('touchcancel',endTouch);
 
 function gust(){
   const R=150*scale;
@@ -186,14 +190,18 @@ for(const k in ui){const[s,l,key,fmt]=ui[k];
     document.getElementById(l).textContent=fmt(CFG[key]);});}
 const panel=document.getElementById('panel'),toggle=document.getElementById('toggle');
 document.getElementById('reset').onclick=()=>{Object.assign(CFG,DEFAULTS);syncUI();};
-document.getElementById('hide').onclick=()=>{panel.classList.add('hidden');toggle.style.display='block';};
+document.getElementById('hide').onclick=()=>{panel.classList.add('hidden');toggle.style.display='flex';};
 toggle.onclick=()=>{panel.classList.remove('hidden');toggle.style.display='none';};
+toggle.style.display='flex';   // panel hidden by default → settings icon shows
 
 addEventListener('resize',build);
 build(); syncUI(); loop();
 
 // ---------- toast hint: appears at the cursor, then auto-dismisses ----------
 const hint=document.getElementById('hint');
+const isTouch=window.matchMedia('(pointer:coarse)').matches||('ontouchstart' in window);
+hint.textContent=isTouch?'Drag over the text to see the effect'
+                        :'Move your cursor over the text to see the effect';
 hint.style.left=(W/2)+'px'; hint.style.top=(H*0.6)+'px';   // before first move
 function placeHint(x,y){ hint.style.left=x+'px'; hint.style.top=y+'px'; }
 addEventListener('mousemove',e=>placeHint(e.clientX,e.clientY));
