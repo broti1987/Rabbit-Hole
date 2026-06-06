@@ -82,7 +82,10 @@ function build(){
 }
 
 const mouse={x:-999,y:-999,px:-999,py:-999,on:false};
-function mv(x,y){mouse.px=mouse.x;mouse.py=mouse.y;mouse.x=x;mouse.y=y;mouse.on=true;}
+function mv(x,y){
+  if(!mouse.on){mouse.x=x;mouse.y=y;}   // first contact: no phantom velocity jump
+  mouse.px=mouse.x;mouse.py=mouse.y;mouse.x=x;mouse.y=y;mouse.on=true;
+}
 cv.addEventListener('mousemove',e=>mv(e.clientX,e.clientY));
 cv.addEventListener('mouseleave',()=>{mouse.on=false;mouse.x=mouse.y=-999;});
 cv.addEventListener('mousedown',gust);
